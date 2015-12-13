@@ -2,19 +2,24 @@
  * Created by willowcheng on 2015-12-12.
  */
 
+var resourceLoader;
+
 App.onLaunch = function(options) {
-    // 1
+
     var javascriptFiles = [
+        `${options.BASEURL}js/ResourceLoader.js`,
         `${options.BASEURL}js/Presenter.js`
     ];
-    // 2
+
     evaluateScripts(javascriptFiles, function(success) {
         if(success) {
-            var alert = createAlert("Welcome to Coala", "Find you nearby talent");
-            Presenter.modalDialogPresenter(alert);
+            resourceLoader = new ResourceLoader(options.BASEURL);
+            resourceLoader.loadResource(`${options.BASEURL}templates/RWDevConTemplate.xml.js`, function(resource) {
+                var doc = Presenter.makeDocument(resource);
+                Presenter.pushDocument(doc);
+            })
         } else {
-            // 3 Handle the error CHALLENGE!//inside else statement of evaluateScripts.
-            //inside else statement of evaluateScripts.
+
             var errorDoc = createAlert("Evaluate Scripts Error", "Error attempting to evaluate external JavaScript files.");
             navigationDocument.presentModal(errorDoc);
         }
